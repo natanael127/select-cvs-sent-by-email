@@ -28,20 +28,28 @@ def list_files_by_extension(directory, extension):
         if file.endswith(extension):
             output_list.append(os.path.join(directory, file))
     return output_list
+    
+def email_to_dictionary(eml_file):
+    with open(eml_file, 'rb') as fhdl:
+        raw_email = fhdl.read()
+    ep = eml_parser.EmlParser()
+    parsed_eml = ep.decode_email_bytes(raw_email)
+    return parsed_eml
 
 # ===================== MAIN SCRIPT ========================================== #
-with open('E-mails/[vagas.fw] CV para vaga estágio - Desenvolvedor em linguagem C.eml', 'rb') as fhdl:
-    raw_email = fhdl.read()
-
-ep = eml_parser.EmlParser()
-parsed_eml = ep.decode_email_bytes(raw_email)
+list_email_files = list_files_by_extension(DIR_EMAIL, EXT_EMAIL)
+for idx in range(len(list_email_files)):
+    email_dict = email_to_dictionary(list_email_files[idx])
+    print(email_dict["header"]["header"]["from"][0])
+    print(email_dict["attachment"][0]["filename"])
+    
+exit()
 x = json.dumps(parsed_eml, default=json_serial)
 
 json_file = open('teste.json','w')
 json_file.write(x)
 json_file.close()
 
-print(parsed_eml["header"]["header"]["from"][0])
-print(parsed_eml["attachment"][0]["filename"])
+print(email_dict["header"]["header"]["from"][0])
+print(email_dict["attachment"][0]["filename"])
 
-print(list_files_by_extension(DIR_EMAIL, EXT_EMAIL))
