@@ -57,9 +57,9 @@ for idx in range(len(list_email_files)):
     fp.write(json_str)
     fp.close()
     # Show data
-    print(str(idx + 1).zfill(3))
-    print(email_file)
-    print(candidate)
     if not os.path.exists(DIR_EMAIL + candidate["cv_filename"]):
-        print("File error")
-    print()
+        print(str(idx + 1).zfill(3))
+        print(email_file)
+        print(candidate)
+        print("FILE ERROR")
+        print()
