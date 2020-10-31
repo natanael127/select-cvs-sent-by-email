@@ -17,6 +17,7 @@ EXT_JSON  = ".json"
 FILE_CANDIDATES = "lista.tsv"
 MSG_ERROR = "Erro ao obter anexo"
 CVS_POSSIBLE_EXT = [".pdf", ".docx", ".doc", ".odt"]
+NAME_FORBBIDEN_CHARS = ["\"", "\'", "-"]
 
 # ===================== AUXILIAR FUNCTIONS =================================== #
 def json_serial(obj):
@@ -82,8 +83,11 @@ for idx_email in range(len(list_email_files)):
     for idx_attach in range(len(list_attachments)):
         if get_extension(list_attachments[idx_attach]["filename"]) in CVS_POSSIBLE_EXT:
             break
+    # Composes candidate dictionary
     candidate = {}
     candidate["name"] = break_sender(email_dict["header"]["header"]["from"][0])[0]
+    for exclude_char in NAME_FORBBIDEN_CHARS:
+        candidate["name"] = candidate["name"].replace(exclude_char,"")
     candidate["email_address"] = break_sender(email_dict["header"]["header"]["from"][0])[1]
     candidate["file_extension"] = get_extension(list_attachments[idx_attach]["filename"])
     candidate["file_hash"] = list_attachments[idx_attach]["hash"]["sha256"]
