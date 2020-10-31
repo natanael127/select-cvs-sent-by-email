@@ -67,7 +67,7 @@ for file_name in all_input_files:
         bytes = f.read() # read entire file as bytes
     readable_hash = hashlib.sha256(bytes).hexdigest();
     output_file_path = DIR_HASH + readable_hash + extension
-    shutil.move(input_file_path, output_file_path)
+    shutil.copy(input_file_path, output_file_path)
 
 # Parses e-mail files
 list_email_files = list_files_by_extension(DIR_EMAIL, EXT_EMAIL)
