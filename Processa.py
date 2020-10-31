@@ -35,12 +35,15 @@ def email_to_dictionary(eml_file):
     ep = eml_parser.EmlParser()
     parsed_eml = ep.decode_email_bytes(raw_email)
     return parsed_eml
+    
+def break_sender(str_name_email):
+    return tuple(str_name_email[:-1].split(" <"))
 
 # ===================== MAIN SCRIPT ========================================== #
 list_email_files = list_files_by_extension(DIR_EMAIL, EXT_EMAIL)
 for idx in range(len(list_email_files)):
     email_dict = email_to_dictionary(list_email_files[idx])
     print(list_email_files[idx])
-    print(email_dict["header"]["header"]["from"][0])
+    print(break_sender(email_dict["header"]["header"]["from"][0]))
     print(email_dict["attachment"][0]["filename"])
     print()
