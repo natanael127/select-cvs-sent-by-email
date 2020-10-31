@@ -7,7 +7,9 @@ import eml_parser
 # ===================== CONSTANTS ============================================ #
 DIR_EMAIL = "E-mails/"
 DIR_CVS   = "Curriculos/"
+DIR_JSON  = "Json/"
 EXT_EMAIL = ".eml"
+EXT_JSON  = ".json"
 
 # ===================== AUXILIAR FUNCTIONS =================================== #
 def json_serial(obj):
@@ -30,7 +32,7 @@ def list_files_by_extension(directory, extension):
     return output_list
     
 def email_to_dictionary(eml_file):
-    with open(eml_file, 'rb') as fhdl:
+    with open(eml_file, "rb") as fhdl:
         raw_email = fhdl.read()
     ep = eml_parser.EmlParser()
     parsed_eml = ep.decode_email_bytes(raw_email)
@@ -42,13 +44,20 @@ def break_sender(str_name_email):
 # ===================== MAIN SCRIPT ========================================== #
 list_email_files = list_files_by_extension(DIR_EMAIL, EXT_EMAIL)
 for idx in range(len(list_email_files)):
-    print(str(idx + 1).zfill(3))
+    # Parses to variables
     email_file = list_email_files[idx]
     email_dict = email_to_dictionary(email_file)
     candidate = {}
+    candidate["index"] = str(idx + 1).zfill(3)
     candidate["name"] = break_sender(email_dict["header"]["header"]["from"][0])[0]
     candidate["email_address"] = break_sender(email_dict["header"]["header"]["from"][0])[1]
     candidate["cv_filename"] = email_dict["attachment"][0]["filename"]
+    # Json file for debug
+    fp = open_creating_dirs(DIR_JSON + candidate["index"] + EXT_JSON, "w")
+    json_str = json.dumps(email_dict, default=json_serial)
+    fp.write(json_str)
+    fp.close()
+    # Show data
     print(email_file)
     print(candidate)
     if not os.path.exists(DIR_EMAIL + candidate["cv_filename"]):
