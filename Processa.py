@@ -30,9 +30,9 @@ def open_creating_dirs(path, mode):
 
 def list_files_by_extension(directory, extension):
     output_list = []
-    for file in os.listdir(directory):
-        if file.endswith(extension):
-            output_list.append(os.path.join(directory, file))
+    for file_name in os.listdir(directory):
+        if file_name.endswith(extension):
+            output_list.append(os.path.join(directory, file_name))
     return output_list
     
 def email_to_dictionary(eml_file):
@@ -61,6 +61,7 @@ for idx in range(len(list_email_files)):
     candidate["name"] = break_sender(email_dict["header"]["header"]["from"][0])[0]
     candidate["email_address"] = break_sender(email_dict["header"]["header"]["from"][0])[1]
     candidate["cv_filename"] = email_dict["attachment"][0]["filename"]
+    candidate["file_hash"] = email_dict["attachment"][0]["hash"]["sha256"]
     list_candidates.append(candidate)
 
 # Parses list of candidates
