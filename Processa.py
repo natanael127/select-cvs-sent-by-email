@@ -47,28 +47,37 @@ def break_sender(str_name_email):
 if not os.path.isdir(os.path.dirname(DIR_CVS)):
         os.makedirs(os.path.dirname(DIR_CVS))
 list_email_files = list_files_by_extension(DIR_EMAIL, EXT_EMAIL)
+tsv_string = ""
 for idx in range(len(list_email_files)):
     # Parses to variables
-    idx_str = str(idx + 1).zfill(3)
     email_file = list_email_files[idx]
     email_dict = email_to_dictionary(email_file)
     candidate = {}
+    candidate["index"] = str(idx + 1).zfill(3)
     candidate["name"] = break_sender(email_dict["header"]["header"]["from"][0])[0]
     candidate["email_address"] = break_sender(email_dict["header"]["header"]["from"][0])[1]
     candidate["cv_filename"] = email_dict["attachment"][0]["filename"]
     # Json file for debug
-    fp = open_creating_dirs(DIR_JSON + idx_str + EXT_JSON, "w")
+    fp = open_creating_dirs(DIR_JSON + candidate["index"] + EXT_JSON, "w")
     json_str = json.dumps(email_dict, default=json_serial)
     fp.write(json_str)
     fp.close()
-    # Process or warn about some missing file
+    # Append data to TSV string
+    tsv_string = tsv_string + candidate["index"] + "\t"
+    tsv_string = tsv_string + candidate["name"] + "\t"
+    tsv_string = tsv_string + candidate["email_address"] + "\r\n"
+    # Process cv or warn about some missing file
     cv_extension = "." + candidate["cv_filename"].split(".")[-1]
     path_to_received = DIR_EMAIL + candidate["cv_filename"]
-    path_to_organized = DIR_CVS + idx_str + " - " + candidate["name"] + cv_extension
+    path_to_organized = DIR_CVS + candidate["index"] + " - " + candidate["name"] + cv_extension
     if os.path.exists(path_to_received):
         shutil.copyfile(path_to_received, path_to_organized)
     else:
-        print(idx_str)
+        print(candidate["index"])
         print(email_file)
         print(candidate)
         print()
+# Dump TSV string to file
+fp = open(FILE_CANDIDATES, "w")
+fp.write(tsv_string)
+fp.close()
