@@ -75,7 +75,7 @@ for idx in range(len(list_email_files)):
     candidate = {}
     candidate["name"] = break_sender(email_dict["header"]["header"]["from"][0])[0]
     candidate["email_address"] = break_sender(email_dict["header"]["header"]["from"][0])[1]
-    candidate["cv_filename"] = email_dict["attachment"][0]["filename"]
+    candidate["file_extension"] = get_extension(email_dict["attachment"][0]["filename"])
     candidate["file_hash"] = email_dict["attachment"][0]["hash"]["sha256"]
     list_candidates.append(candidate)
 
@@ -90,8 +90,8 @@ for idx in range(len(list_candidates)):
     tsv_string = tsv_string + candidate["name"] + "\t"
     tsv_string = tsv_string + candidate["email_address"] + "\t"
     # Process cv or warn about some missing file
-    path_to_received = DIR_EMAIL + candidate["cv_filename"]
-    path_to_organized = DIR_CVS + idx_str + " - " + candidate["name"] + get_extension(candidate["cv_filename"])
+    path_to_received = DIR_EMAIL + candidate["file_hash"] + candidate["file_extension"]
+    path_to_organized = DIR_CVS + idx_str + " - " + candidate["name"] + candidate["file_extension"]
     if os.path.exists(path_to_received):
         shutil.copyfile(path_to_received, path_to_organized)
     else:
