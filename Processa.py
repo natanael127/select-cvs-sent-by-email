@@ -5,6 +5,7 @@ import os
 import eml_parser
 import shutil
 import operator
+import hashlib
 
 # ===================== CONSTANTS ============================================ #
 DIR_EMAIL = "E-mails/"
@@ -44,11 +45,25 @@ def email_to_dictionary(eml_file):
     
 def break_sender(str_name_email):
     return tuple(str_name_email[:-1].split(" <"))
+    
+def get_extension(file_name):
+    return "." + file_name.split(".")[-1]
 
 # ===================== MAIN SCRIPT ========================================== #
 # Creates missing directories if does not exist
 if not os.path.isdir(os.path.dirname(DIR_CVS)):
         os.makedirs(os.path.dirname(DIR_CVS))
+
+# Renames files to its sha256 hash
+all_input_files = os.listdir(DIR_EMAIL)
+for file_name in all_input_files:
+    extension = get_extension(file_name)
+    input_file_path = DIR_EMAIL + file_name
+    with open(input_file_path, "rb") as f:
+        bytes = f.read() # read entire file as bytes
+    readable_hash = hashlib.sha256(bytes).hexdigest();
+    output_file_path = DIR_EMAIL + readable_hash + extension
+    shutil.move(input_file_path, output_file_path)
 
 # Parses e-mail files
 list_email_files = list_files_by_extension(DIR_EMAIL, EXT_EMAIL)
@@ -75,9 +90,8 @@ for idx in range(len(list_candidates)):
     tsv_string = tsv_string + candidate["name"] + "\t"
     tsv_string = tsv_string + candidate["email_address"] + "\t"
     # Process cv or warn about some missing file
-    cv_extension = "." + candidate["cv_filename"].split(".")[-1]
     path_to_received = DIR_EMAIL + candidate["cv_filename"]
-    path_to_organized = DIR_CVS + idx_str + " - " + candidate["name"] + cv_extension
+    path_to_organized = DIR_CVS + idx_str + " - " + candidate["name"] + get_extension(candidate["cv_filename"])
     if os.path.exists(path_to_received):
         shutil.copyfile(path_to_received, path_to_organized)
     else:
