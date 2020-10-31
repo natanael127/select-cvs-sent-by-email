@@ -70,9 +70,9 @@ for idx in range(len(list_email_files)):
     fp.close()
 
 # Parses list of candidates
-sorted_list_candidates = sorted(list_candidates, key=lambda k: k["name"])
+list_candidates = sorted(list_candidates, key=lambda k: k["name"])
 tsv_string = ""
-for candidate in sorted_list_candidates:
+for candidate in list_candidates:
     # Append data to TSV string
     tsv_string = tsv_string + candidate["index"] + "\t"
     tsv_string = tsv_string + candidate["name"] + "\t"
