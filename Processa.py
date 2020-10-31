@@ -16,6 +16,7 @@ EXT_EMAIL = ".eml"
 EXT_JSON  = ".json"
 FILE_CANDIDATES = "lista.tsv"
 MSG_ERROR = "Erro ao obter anexo"
+CVS_POSSIBLE_EXT = [".pdf", ".docx", ".doc", ".odt"]
 
 # ===================== AUXILIAR FUNCTIONS =================================== #
 def json_serial(obj):
@@ -72,23 +73,28 @@ for file_name in all_input_files:
 # Parses e-mail files
 list_email_files = list_files_by_extension(DIR_EMAIL, EXT_EMAIL)
 list_candidates = []
-for idx in range(len(list_email_files)):
+for idx_email in range(len(list_email_files)):
     # Parses to variables
-    email_file = list_email_files[idx]
+    email_file = list_email_files[idx_email]
     email_dict = email_to_dictionary(email_file)
+    list_attachments = email_dict["attachment"]
+    # Looks for acceptable attachment
+    for idx_attach in range(len(list_attachments)):
+        if get_extension(list_attachments[idx_attach]["filename"]) in CVS_POSSIBLE_EXT:
+            break
     candidate = {}
     candidate["name"] = break_sender(email_dict["header"]["header"]["from"][0])[0]
     candidate["email_address"] = break_sender(email_dict["header"]["header"]["from"][0])[1]
-    candidate["file_extension"] = get_extension(email_dict["attachment"][0]["filename"])
-    candidate["file_hash"] = email_dict["attachment"][0]["hash"]["sha256"]
+    candidate["file_extension"] = get_extension(list_attachments[idx_attach]["filename"])
+    candidate["file_hash"] = list_attachments[idx_attach]["hash"]["sha256"]
     list_candidates.append(candidate)
 
 # Parses list of candidates
 list_candidates = sorted(list_candidates, key=lambda k: k["name"])
 tsv_string = ""
-for idx in range(len(list_candidates)):
-    candidate = list_candidates[idx]
-    idx_str = str(idx + 1).zfill(3)
+for idx_cand in range(len(list_candidates)):
+    candidate = list_candidates[idx_cand]
+    idx_str = str(idx_cand + 1).zfill(3)
     # Append data to TSV string
     tsv_string = tsv_string + idx_str + "\t"
     tsv_string = tsv_string + candidate["name"] + "\t"
