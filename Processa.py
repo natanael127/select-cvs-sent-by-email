@@ -12,6 +12,7 @@ DIR_JSON  = "Json/"
 EXT_EMAIL = ".eml"
 EXT_JSON  = ".json"
 FILE_CANDIDATES = "lista.tsv"
+MSG_ERROR = "Erro ao obter anexo"
 
 # ===================== AUXILIAR FUNCTIONS =================================== #
 def json_serial(obj):
@@ -65,7 +66,7 @@ for idx in range(len(list_email_files)):
     # Append data to TSV string
     tsv_string = tsv_string + candidate["index"] + "\t"
     tsv_string = tsv_string + candidate["name"] + "\t"
-    tsv_string = tsv_string + candidate["email_address"] + "\r\n"
+    tsv_string = tsv_string + candidate["email_address"] + "\t"
     # Process cv or warn about some missing file
     cv_extension = "." + candidate["cv_filename"].split(".")[-1]
     path_to_received = DIR_EMAIL + candidate["cv_filename"]
@@ -73,10 +74,8 @@ for idx in range(len(list_email_files)):
     if os.path.exists(path_to_received):
         shutil.copyfile(path_to_received, path_to_organized)
     else:
-        print(candidate["index"])
-        print(email_file)
-        print(candidate)
-        print()
+        tsv_string = tsv_string + MSG_ERROR
+    tsv_string = tsv_string + "\r\n"
 # Dump TSV string to file
 fp = open(FILE_CANDIDATES, "w")
 fp.write(tsv_string)
