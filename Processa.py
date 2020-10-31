@@ -43,8 +43,12 @@ def break_sender(str_name_email):
 list_email_files = list_files_by_extension(DIR_EMAIL, EXT_EMAIL)
 for idx in range(len(list_email_files)):
     print(str(idx + 1).zfill(3))
-    email_dict = email_to_dictionary(list_email_files[idx])
-    print(list_email_files[idx])
-    print(break_sender(email_dict["header"]["header"]["from"][0]))
-    print(str(email_dict["attachment"][0]["filename"]).encode('utf8'))
+    email_file = list_email_files[idx]
+    email_dict = email_to_dictionary(email_file)
+    candidate = {}
+    candidate["name"] = break_sender(email_dict["header"]["header"]["from"][0])[0]
+    candidate["email_address"] = break_sender(email_dict["header"]["header"]["from"][0])[1]
+    candidate["cv_filename"] = str(email_dict["attachment"][0]["filename"]).encode('utf8')
+    print(email_file)
+    print(candidate)
     print()
