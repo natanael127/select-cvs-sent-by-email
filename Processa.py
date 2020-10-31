@@ -40,16 +40,7 @@ def email_to_dictionary(eml_file):
 list_email_files = list_files_by_extension(DIR_EMAIL, EXT_EMAIL)
 for idx in range(len(list_email_files)):
     email_dict = email_to_dictionary(list_email_files[idx])
+    print(list_email_files[idx])
     print(email_dict["header"]["header"]["from"][0])
     print(email_dict["attachment"][0]["filename"])
-    
-exit()
-x = json.dumps(parsed_eml, default=json_serial)
-
-json_file = open('teste.json','w')
-json_file.write(x)
-json_file.close()
-
-print(email_dict["header"]["header"]["from"][0])
-print(email_dict["attachment"][0]["filename"])
-
+    print()
