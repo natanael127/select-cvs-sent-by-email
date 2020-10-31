@@ -10,6 +10,7 @@ import hashlib
 # ===================== CONSTANTS ============================================ #
 DIR_EMAIL = "E-mails/"
 DIR_CVS   = "Curriculos/"
+DIR_HASH  = "Hashes/"
 DIR_JSON  = "Json/"
 EXT_EMAIL = ".eml"
 EXT_JSON  = ".json"
@@ -48,11 +49,14 @@ def break_sender(str_name_email):
     
 def get_extension(file_name):
     return "." + file_name.split(".")[-1]
-
+    
+def create_dir_if_missing(dir_path):
+    if not os.path.isdir(os.path.dirname(dir_path)):
+        os.makedirs(os.path.dirname(dir_path))
 # ===================== MAIN SCRIPT ========================================== #
 # Creates missing directories if does not exist
-if not os.path.isdir(os.path.dirname(DIR_CVS)):
-        os.makedirs(os.path.dirname(DIR_CVS))
+create_dir_if_missing(DIR_CVS)
+create_dir_if_missing(DIR_HASH)
 
 # Renames files to its sha256 hash
 all_input_files = os.listdir(DIR_EMAIL)
@@ -62,7 +66,7 @@ for file_name in all_input_files:
     with open(input_file_path, "rb") as f:
         bytes = f.read() # read entire file as bytes
     readable_hash = hashlib.sha256(bytes).hexdigest();
-    output_file_path = DIR_EMAIL + readable_hash + extension
+    output_file_path = DIR_HASH + readable_hash + extension
     shutil.move(input_file_path, output_file_path)
 
 # Parses e-mail files
@@ -90,7 +94,7 @@ for idx in range(len(list_candidates)):
     tsv_string = tsv_string + candidate["name"] + "\t"
     tsv_string = tsv_string + candidate["email_address"] + "\t"
     # Process cv or warn about some missing file
-    path_to_received = DIR_EMAIL + candidate["file_hash"] + candidate["file_extension"]
+    path_to_received = DIR_HASH + candidate["file_hash"] + candidate["file_extension"]
     path_to_organized = DIR_CVS + idx_str + " - " + candidate["name"] + candidate["file_extension"]
     if os.path.exists(path_to_received):
         shutil.copyfile(path_to_received, path_to_organized)

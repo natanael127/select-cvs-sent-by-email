@@ -1,6 +1,8 @@
 *.zip
 *.json
 *.tsv
+*.txt
 E-mails/
 Json/
 Curriculos/
+Hashes/
