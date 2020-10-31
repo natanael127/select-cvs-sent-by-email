@@ -48,7 +48,9 @@ for idx in range(len(list_email_files)):
     candidate = {}
     candidate["name"] = break_sender(email_dict["header"]["header"]["from"][0])[0]
     candidate["email_address"] = break_sender(email_dict["header"]["header"]["from"][0])[1]
-    candidate["cv_filename"] = str(email_dict["attachment"][0]["filename"]).encode('utf8')
+    candidate["cv_filename"] = email_dict["attachment"][0]["filename"]
     print(email_file)
     print(candidate)
+    if not os.path.exists(DIR_EMAIL + candidate["cv_filename"]):
+        print("File error")
     print()
