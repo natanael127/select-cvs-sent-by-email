@@ -1,31 +1,20 @@
 # ===================== IMPORTS ============================================== #
-import datetime
-import json
 import os
 import eml_parser
 import shutil
-import operator
 import hashlib
 
 # ===================== CONSTANTS ============================================ #
 DIR_EMAIL = "E-mails/"
 DIR_CVS   = "Curriculos/"
 DIR_HASH  = "Hashes/"
-DIR_JSON  = "Json/"
 EXT_EMAIL = ".eml"
-EXT_JSON  = ".json"
 FILE_CANDIDATES = "lista.tsv"
 MSG_ERROR = "Erro ao obter anexo"
 CVS_POSSIBLE_EXT = [".pdf", ".docx", ".doc", ".odt"]
 NAME_FORBBIDEN_CHARS = ["\"", "\'", "-"]
 
 # ===================== AUXILIAR FUNCTIONS =================================== #
-def json_serial(obj):
-    serial = ""
-    if isinstance(obj, datetime.datetime):
-        serial = obj.isoformat()
-    return serial
-    
 def open_creating_dirs(path, mode):
     if not os.path.isdir(os.path.dirname(path)):
         os.makedirs(os.path.dirname(path))
