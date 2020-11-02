@@ -53,7 +53,7 @@ locale.setlocale(locale.LC_ALL, "pt_BR.UTF-8")
 create_dir_if_missing(DIR_CVS)
 create_dir_if_missing(DIR_HASH)
 
-# Renames files to its sha256 hash
+# Renames files to theirs sha256 hash
 all_input_files = os.listdir(DIR_EMAIL)
 for file_name in all_input_files:
     extension = get_extension(file_name)
@@ -79,8 +79,18 @@ for idx_email in range(len(list_email_files)):
     # Composes candidate dictionary
     candidate = {}
     candidate["name"] = break_sender(email_dict["header"]["header"]["from"][0])[0]
+    # Formats the name with no special characters
     for exclude_char in NAME_FORBBIDEN_CHARS:
         candidate["name"] = candidate["name"].replace(exclude_char,"")
+    # Formats the name capitalized
+    list_subnames = candidate["name"].split(" ")
+    for idx_subname in range(len(list_subnames)):
+        if list_subnames[idx_subname].lower() == "de":
+            list_subnames[idx_subname] = list_subnames[idx_subname].lower()
+        else:
+            list_subnames[idx_subname] = list_subnames[idx_subname].capitalize()
+    candidate["name"] = " ".join(list_subnames)
+    # Direct fields
     candidate["email_address"] = break_sender(email_dict["header"]["header"]["from"][0])[1]
     candidate["file_extension"] = get_extension(list_attachments[idx_attach]["filename"])
     candidate["file_hash"] = list_attachments[idx_attach]["hash"]["sha256"]
