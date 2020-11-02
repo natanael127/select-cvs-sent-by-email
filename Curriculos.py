@@ -16,12 +16,6 @@ CVS_POSSIBLE_EXT = [".pdf", ".docx", ".doc", ".odt"]
 NAME_FORBBIDEN_CHARS = ["\"", "\'", "-"]
 
 # ===================== AUXILIAR FUNCTIONS =================================== #
-def open_creating_dirs(path, mode):
-    if not os.path.isdir(os.path.dirname(path)):
-        os.makedirs(os.path.dirname(path))
-    fp_itemx = open(path, mode)
-    return fp_itemx
-
 def list_files_by_extension(directory, extension):
     output_list = []
     for file_name in os.listdir(directory):
