@@ -3,6 +3,7 @@ import os
 import eml_parser
 import shutil
 import hashlib
+import locale
 
 # ===================== CONSTANTS ============================================ #
 DIR_EMAIL = "E-mails/"
@@ -45,6 +46,9 @@ def create_dir_if_missing(dir_path):
     if not os.path.isdir(os.path.dirname(dir_path)):
         os.makedirs(os.path.dirname(dir_path))
 # ===================== MAIN SCRIPT ========================================== #
+# Locale settings
+locale.setlocale(locale.LC_ALL, "pt_BR.UTF-8") 
+
 # Creates missing directories if does not exist
 create_dir_if_missing(DIR_CVS)
 create_dir_if_missing(DIR_HASH)
@@ -83,7 +87,7 @@ for idx_email in range(len(list_email_files)):
     list_candidates.append(candidate)
 
 # Parses list of candidates
-list_candidates = sorted(list_candidates, key=lambda k: k["name"])
+list_candidates = sorted(list_candidates, key=lambda k: locale.strxfrm(k["name"]))
 tsv_string = ""
 for idx_cand in range(len(list_candidates)):
     candidate = list_candidates[idx_cand]
