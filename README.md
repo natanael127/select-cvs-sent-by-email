@@ -10,6 +10,8 @@
 * **Baixe** todos os anexos do e-mail enviado/recebido como **.zip** e descompacte-os dentro de uma pasta chamada ```E-mails/```
     * Se for requisitado um idioma de decodificação, escolha ```Português```
 * Coloque a pasta ```E-mails/``` na **mesma localização** do script ```Curriculos.py```
+* As seguintes dependências devem ser instaladas para boa execução do python3 (Use ```pip3 install <dep>```)
+    * eml-parser
 * **Execute** o script
 
 ## Resultados
