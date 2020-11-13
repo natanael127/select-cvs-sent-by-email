@@ -107,7 +107,7 @@ for idx_cand in range(len(list_candidates)):
         shutil.copyfile(path_to_received, path_to_organized)
     else:
         tsv_string = tsv_string + MSG_ERROR
-    tsv_string = tsv_string + "\r\n"
+    tsv_string = tsv_string + "\n"
     
 # Dump TSV string to file
 fp = open(FILE_CANDIDATES, "w")
