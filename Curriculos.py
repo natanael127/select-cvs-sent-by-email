@@ -99,7 +99,7 @@ for idx_cand in range(len(list_candidates)):
     # Process cv or warn about some missing file
     path_to_received = DIR_HASH + candidate["file_hash"] + candidate["file_extension"]
     path_to_organized = DIR_CVS + candidate["Indice"] + " - " + candidate["Nome"] + candidate["file_extension"]
-    if os.path.exists(path_to_received):
+    if os.path.isfile(path_to_received):
         shutil.copyfile(path_to_received, path_to_organized)
         candidate["Observacao"] = ""
     else:
