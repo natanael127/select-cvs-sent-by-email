@@ -15,5 +15,5 @@
 * **Execute** o script
 
 ## Resultados
-* Arquivo em formato .tsv com os dados do candidatos (numeração automática, nome e e-mail) pronto para colar em uma planilha
+* Arquivo em formato .csv com os dados do candidatos (numeração automática, nome e e-mail) pronto para abrir com editor de planilhas
 * Pasta ```Curriculos/``` com os currículos renomeados (com número e nome do candidato)

@@ -1,6 +1,7 @@
 *.zip
 *.json
 *.tsv
+*.csv
 *.txt
 E-mails/
 Json/
