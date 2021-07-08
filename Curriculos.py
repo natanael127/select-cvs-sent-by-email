@@ -1,10 +1,9 @@
 # ===================== IMPORTS ============================================== #
 import os
 import eml_parser
-import shutil
-import hashlib
 import locale
 import csv
+import base64
 
 # ===================== CONSTANTS ============================================ #
 DIR_EMAIL = "E-mails/"
@@ -24,11 +23,8 @@ def list_files_by_extension(directory, extension):
     return output_list
     
 def email_to_dictionary(eml_file):
-    with open(eml_file, "rb") as fhdl:
-        raw_email = fhdl.read()
-    ep = eml_parser.EmlParser()
-    parsed_eml = ep.decode_email_bytes(raw_email)
-    return parsed_eml
+    ep = eml_parser.EmlParser(include_attachment_data=True)
+    return ep.decode_email(eml_file)
     
 def break_sender(str_name_email):
     return tuple(str_name_email[:-1].split(" <"))
@@ -45,15 +41,6 @@ locale.setlocale(locale.LC_ALL, "pt_BR.UTF-8")
 
 # Creates missing directories if does not exist
 create_dir_if_missing(DIR_CVS)
-
-# Creates a hash table for CVs
-all_input_files = os.listdir(DIR_EMAIL)
-files_hash_table = []
-for k in range(len(all_input_files)):
-    files_hash_table.append({})
-    files_hash_table[k]["path"] = DIR_EMAIL + all_input_files[k]
-    bytes = open(files_hash_table[k]["path"], "rb").read()
-    files_hash_table[k]["hash"] = hashlib.sha256(bytes).hexdigest();
 
 # Parses e-mail files
 list_email_files = list_files_by_extension(DIR_EMAIL, EXT_EMAIL)
@@ -84,28 +71,21 @@ for idx_email in range(len(list_email_files)):
     # Direct fields
     candidate["E-mail"] = break_sender(email_dict["header"]["header"]["from"][0])[1]
     candidate["file_extension"] = get_extension(list_attachments[idx_attach]["filename"])
-    candidate["file_hash"] = list_attachments[idx_attach]["hash"]["sha256"]
+    candidate["file_content"] = base64.b64decode(list_attachments[idx_attach]["raw"])
     list_candidates.append(candidate)
 
-# Parses list of candidates
+# Parses list of candidates and organizes documents
 list_candidates = sorted(list_candidates, key=lambda k: locale.strxfrm(k["Nome"]))
 for idx_cand in range(len(list_candidates)):
     candidate = list_candidates[idx_cand]
     candidate["Indice"] = str(idx_cand + 1).zfill(3)
-    # Process cv or warn about some missing file
-    index_hash = [d["hash"] for d in files_hash_table if "hash" in d].index(candidate["file_hash"])
-    path_to_received = files_hash_table[index_hash]["path"]
-    path_to_organized = DIR_CVS + candidate["Indice"] + " - " + candidate["Nome"] + candidate["file_extension"]
-    if os.path.isfile(path_to_received):
-        shutil.copyfile(path_to_received, path_to_organized)
-        candidate["Observacao"] = ""
-    else:
-        candidate["Observacao"] = MSG_ERROR
+    path_cv_doc = DIR_CVS + candidate["Indice"] + " - " + candidate["Nome"] + candidate["file_extension"]
+    with open(path_cv_doc, "wb") as fp:
+        fp.write(candidate["file_content"])
 
-# Dumps to a TSV
-csv_keys = ["Indice", "Nome", "E-mail", "Observacao"]
+# Dumps to a CSV
+csv_keys = ["Indice", "Nome", "E-mail"]
 with open(FILE_CANDIDATES,"w", newline="") as fp:
     dict_writer = csv.DictWriter(fp, csv_keys, delimiter=",", quotechar="\"", quoting=csv.QUOTE_NONNUMERIC, extrasaction="ignore")
     dict_writer.writeheader()
     dict_writer.writerows(list_candidates)
-
