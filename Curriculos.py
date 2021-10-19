@@ -85,7 +85,7 @@ for idx_cand in range(len(list_candidates)):
 
 # Dumps to a CSV
 csv_keys = ["Indice", "Nome", "E-mail"]
-with open(FILE_CANDIDATES,"w", newline="") as fp:
+with open(FILE_CANDIDATES,"w", newline="", encoding="utf-8") as fp:
     dict_writer = csv.DictWriter(fp, csv_keys, delimiter=",", quotechar="\"", quoting=csv.QUOTE_NONNUMERIC, extrasaction="ignore")
     dict_writer.writeheader()
     dict_writer.writerows(list_candidates)
